@@ -118,7 +118,8 @@ public class SimpleRulesArtificialIntelligence extends AbstractArtificialIntelli
 	 */
 	private boolean hasSubThreeRow(int[][] nextState, int player) {
 		/*
-		 * Searches for 2 enemy checkers in a row, column and diagonally and stops them.
+		 * Searches for 2 enemy checkers in a row, column and diagonally and
+		 * stops them.
 		 */
 		int subLineLength = WIN_LINE_LENGTH - 2;
 
@@ -268,6 +269,11 @@ public class SimpleRulesArtificialIntelligence extends AbstractArtificialIntelli
 		return -1;
 	}
 
+	/**
+	 * Created a function to block other 2 in a row, column or diagonally.
+	 * 
+	 * @return Index of the column to be played.
+	 */
 	private int f2() {
 		/*
 		 * Put all players in a collection in order to shuffle it.
@@ -426,6 +432,7 @@ public class SimpleRulesArtificialIntelligence extends AbstractArtificialIntelli
 		} else if ((result = addRnadom()) != -1) {
 			Util.log("Rule 5.");
 		}
+		result = f2();
 
 		return result;
 

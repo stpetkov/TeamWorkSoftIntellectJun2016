@@ -19,9 +19,8 @@ public class Main {
 					state[i][j] = 0;
 				} else {
 					state[i][j] = ((Integer[]) ArtificialIntelligence.STATE_VALUES
-							.toArray(new Integer[ArtificialIntelligence.STATE_VALUES
-									.size()]))[Util.PRNG
-							.nextInt(ArtificialIntelligence.STATE_VALUES.size())];
+							.toArray(new Integer[ArtificialIntelligence.STATE_VALUES.size()]))[Util.PRNG
+									.nextInt(ArtificialIntelligence.STATE_VALUES.size())];
 				}
 			}
 		}
@@ -55,16 +54,16 @@ public class Main {
 		}
 		System.out.println();
 
+		int player = ((Integer[]) ArtificialIntelligence.STATE_VALUES
+				.toArray(new Integer[ArtificialIntelligence.STATE_VALUES.size()]))[Util.PRNG
+						.nextInt(ArtificialIntelligence.STATE_VALUES.size())];
+		System.out.println(player);
+		System.out.println();
+
 		/*
 		 * Run the tests.
 		 */
-		int result = bot
-				.move(state,
-						((Integer[]) ArtificialIntelligence.STATE_VALUES
-								.toArray(new Integer[ArtificialIntelligence.STATE_VALUES
-										.size()]))[Util.PRNG
-								.nextInt(ArtificialIntelligence.STATE_VALUES
-										.size())]);
+		int result = bot.move(state, player);
 
 		/*
 		 * Print test result.
