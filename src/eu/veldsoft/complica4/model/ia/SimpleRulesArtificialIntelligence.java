@@ -8,8 +8,7 @@ import java.util.List;
  * 
  * @author Todor Balabanov
  */
-public class SimpleRulesArtificialIntelligence extends
-		AbstractArtificialIntelligence {
+public class SimpleRulesArtificialIntelligence extends AbstractArtificialIntelligence {
 	/**
 	 * 
 	 */
@@ -88,8 +87,7 @@ public class SimpleRulesArtificialIntelligence extends
 					return true;
 				}
 
-				for (k = 0; k < WIN_LINE_LENGTH && (i + k) < state.length
-						&& (j + k) < state[i].length; k++) {
+				for (k = 0; k < WIN_LINE_LENGTH && (i + k) < state.length && (j + k) < state[i].length; k++) {
 					if (state[i + k][j + k] != player) {
 						break;
 					}
@@ -98,8 +96,7 @@ public class SimpleRulesArtificialIntelligence extends
 					return true;
 				}
 
-				for (k = 0; k < WIN_LINE_LENGTH && (i - k) >= 0
-						&& (j + k) < state[i].length; k++) {
+				for (k = 0; k < WIN_LINE_LENGTH && (i - k) >= 0 && (j + k) < state[i].length; k++) {
 					if (state[i - k][j + k] != player) {
 						break;
 					}
@@ -119,6 +116,52 @@ public class SimpleRulesArtificialIntelligence extends
 	 * @param player
 	 * @return
 	 */
+	private boolean hasSubThreeRow(int[][] nextState, int player) {
+		int subLineLength = WIN_LINE_LENGTH - 2;
+
+		for (int i = 0, k; i < state.length; i++) {
+			for (int j = 0; j < state[i].length; j++) {
+				for (k = 0; k < subLineLength && (i + k) < state.length; k++) {
+					if (state[i + k][j] != player) {
+						break;
+					}
+				}
+				if (k == subLineLength) {
+					return true;
+				}
+
+				for (k = 0; k < subLineLength && (j + k) < state[i].length; k++) {
+					if (state[i][j + k] != player) {
+						break;
+					}
+				}
+				if (k == subLineLength) {
+					return true;
+				}
+
+				for (k = 0; k < subLineLength && (i + k) < state.length && (j + k) < state[i].length; k++) {
+					if (state[i + k][j + k] != player) {
+						break;
+					}
+				}
+				if (k == subLineLength) {
+					return true;
+				}
+
+				for (k = 0; k < subLineLength && (i - k) >= 0 && (j + k) < state[i].length; k++) {
+					if (state[i - k][j + k] != player) {
+						break;
+					}
+				}
+				if (k == subLineLength) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	private boolean hasSubWinRow(int[][] nextState, int player) {
 		int subLineLength = WIN_LINE_LENGTH - 1;
 
@@ -142,8 +185,7 @@ public class SimpleRulesArtificialIntelligence extends
 					return true;
 				}
 
-				for (k = 0; k < subLineLength && (i + k) < state.length
-						&& (j + k) < state[i].length; k++) {
+				for (k = 0; k < subLineLength && (i + k) < state.length && (j + k) < state[i].length; k++) {
 					if (state[i + k][j + k] != player) {
 						break;
 					}
@@ -152,8 +194,7 @@ public class SimpleRulesArtificialIntelligence extends
 					return true;
 				}
 
-				for (k = 0; k < subLineLength && (i - k) >= 0
-						&& (j + k) < state[i].length; k++) {
+				for (k = 0; k < subLineLength && (i - k) >= 0 && (j + k) < state[i].length; k++) {
 					if (state[i - k][j + k] != player) {
 						break;
 					}
@@ -224,6 +265,50 @@ public class SimpleRulesArtificialIntelligence extends
 		return -1;
 	}
 
+	private int f2() {
+		/*
+		 * Put all players in a collection in order to shuffle it.
+		 */
+		List<Integer> ids = new ArrayList<Integer>();
+		for (int p = 1; p <= NUMBER_OF_PLAYERS; p++) {
+			if (p == player) {
+				continue;
+			}
+			ids.add(p);
+		}
+
+		/*
+		 * By shuffling it will not prefer the left most opponent to block.
+		 */
+		Collections.shuffle(ids);
+
+		/*
+		 * Try each opponent for sub-direct win move.
+		 */
+		List<Integer> solutions = new ArrayList<Integer>();
+		for (Integer p : ids) {
+			for (int i = 0; i < state.length; i++) {
+				int[][] nextState = copy(state);
+				tryMove(nextState, p, i);
+				if (hasSubThreeRow(nextState, p) == true) {
+					solutions.add(i);
+				}
+			}
+		}
+
+		// TODO It is better to block three in a row where it will be possible
+		// to
+		// form four in a row.
+
+		if (solutions.size() == 0) {
+			return -1;
+		} else {
+			Collections.shuffle(solutions);
+			return solutions.get(0);
+		}
+
+	}
+
 	/**
 	 * 
 	 * @return Index of a column to play or -1 if rule is not applicable.
@@ -287,7 +372,8 @@ public class SimpleRulesArtificialIntelligence extends
 			}
 		}
 
-		// TODO It is better to block three in a row where it will be possible to
+		// TODO It is better to block three in a row where it will be possible
+		// to
 		// form four in a row.
 
 		if (solutions.size() == 0) {
@@ -332,10 +418,13 @@ public class SimpleRulesArtificialIntelligence extends
 			Util.log("Rule 3.");
 		} else if ((result = addOneForBlockOtherToFormThree()) != -1) {
 			Util.log("Rule 4.");
+		} else if ((result = f2()) != -1) {
+			Util.log("Rule f2.");
 		} else if ((result = addRnadom()) != -1) {
 			Util.log("Rule 5.");
 		}
 
 		return result;
+
 	}
 }
