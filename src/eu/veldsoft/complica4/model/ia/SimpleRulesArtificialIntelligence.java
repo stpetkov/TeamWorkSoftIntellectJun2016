@@ -117,6 +117,9 @@ public class SimpleRulesArtificialIntelligence extends AbstractArtificialIntelli
 	 * @return
 	 */
 	private boolean hasSubThreeRow(int[][] nextState, int player) {
+		/*
+		 * Searches for 2 enemy checkers in a row, column and diagonally and stops them.
+		 */
 		int subLineLength = WIN_LINE_LENGTH - 2;
 
 		for (int i = 0, k; i < state.length; i++) {
